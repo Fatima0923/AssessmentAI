@@ -1,8 +1,6 @@
 # AI Essay Evaluation Pipeline
 
-A multi-agent LLM framework for AI-assisted essay evaluation, grounded in Sadler's (1989) expert connoisseurship theory and the Centaurian hybrid intelligence framework (Dellermann et al., 2019; Cukurova, 2025). Built with **LangGraph**, **LangChain**, **FAISS RAG**, and **Gradio**.
-
-This study proposes and empirically validates a configurable multi-agent evaluation framework, demonstrating near-perfect AI-human score alignment across discipline-specific, rubric-calibrated assessment contexts in higher education.
+A multi-agent LLM framework for AI-assisted essay evaluation. Built with **LangGraph**, **LangChain**, **FAISS RAG**, and **Gradio**.
 
 ---
 
@@ -56,6 +54,8 @@ project/
 ├── rag_store.py            # FAISS vector store with TF-IDF fallback
 ├── persona_builder.py      # Dynamic assessor persona construction (6 UI inputs)
 ├── reporters.py            # CSV and DOCX export functions
+├── calibration_context.py  # Calibration anchor extraction from human samples
+├── config.py                # Paths, thresholds, and shared configuration
 │
 ├── data/
 │   ├── student/             # Student essay submissions (PDF/DOCX)
@@ -63,8 +63,6 @@ project/
 │   └── context/             # Course rubric, brief, outline (indexed into FAISS)
 │
 ├── results/
-│   ├── scores.csv            # Generated after each run
-│   ├── feedback.docx        # Generated after each run
 │   └── examples/             # Example output files for reference
 │
 ├── requirements.txt
@@ -78,14 +76,14 @@ project/
 
 ### 1. Prerequisites
 
-- **Python 3.12** (required — LangGraph and CrewAI dependencies do not support Python 3.14)
+- **Python 3.12** (required — LangGraph dependencies do not support Python 3.14)
 - A DeepSeek API key (or OpenAI/Gemini with minor code changes)
 
 ### 2. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
+git clone https://github.com/Fatima0923/AssessmentAI.git
+cd AssessmentAI
 ```
 
 ### 3. Create virtual environment with Python 3.12
@@ -155,27 +153,13 @@ Click **Save Configuration**, then preview the generated persona if needed.
 Click **▶ Run Pipeline**. The pipeline runs in a background thread — the interface stays responsive throughout. Watch the real-time log. When complete, download the CSV and DOCX reports using the download buttons. Use **🔄 New Assessment** to clear results and run again with different settings.
 
 ### 3. Research Assistant tab
-A natural, search-capable agent that:
+A conversational agent that:
 - References your actual pipeline results by student name and score
 - Searches the web for academic papers and citations when asked
-- Helps draft publication-ready text for your paper
-- Connects results to theory when you ask for interpretation — but answers factual questions directly
+- Helps draft text for analysis and reporting
+- Adjusts response depth to match the question asked
 
-Optionally paste your research questions or contribution statement into the **Research Context** accordion for more targeted responses.
-
----
-
-## Theoretical Framework
-
-This study draws on:
-
-| Theory | Application |
-|---|---|
-| **Sadler (1989)** — evaluative connoisseurship | Two-pass CoT architecture separates observation from judgment |
-| **Wei et al. (2022)** — Chain-of-Thought | Node 2 (reasoning) precedes Node 3 (scoring) |
-| **Dellermann et al. (2019)** — Centaurian hybrid intelligence | HITL architecture positions AI and human as complementary evaluators |
-| **Cukurova (2025)** — AIED-HCD framework | System sits in the Hybrid Intelligence quadrant (high automation, high human control) |
-| **Hattie & Timperley (2007)** — feedback model | Feed Up / Feedback / Feed Forward maps to the pipeline's reasoning → scoring → feedback structure |
+Optionally paste research notes into the **Research Context** accordion for more targeted responses.
 
 ---
 
@@ -219,7 +203,7 @@ langgraph>=0.1.0
 langchain>=0.2.0
 langchain-community>=0.2.0
 faiss-cpu>=1.7.4
-sentence-transformers>=2.2.2
+sentence-transformers==2.7.0
 gradio>=4.0.0
 PyMuPDF>=1.23.0
 python-docx>=1.0.0
